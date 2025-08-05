@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, send_file
 import io
 from module.midi_utils import create_midi_file
+from module.keyboard_utils import render_keyboard
 
 app = Flask(__name__)
 
@@ -11,7 +12,8 @@ BEATS = 4
 @app.route('/')
 def index():
     note_names = ['C3','C#3','D3','D#3','E3','F3','F#3','G3','G#3','A3','A#3','B3','C4']
-    return render_template('index.html', notes=note_names, beats=BEATS)
+    note_types = render_keyboard()
+    return render_template('index.html', notes=note_names, note_types=note_types, beats=BEATS)
 
 @app.route('/save', methods=['POST'])
 def save_midi():
