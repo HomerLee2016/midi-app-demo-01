@@ -41,9 +41,10 @@ def save_midi():
     grids = data.get('grids')  # list of 2D lists
     instruments = data.get('instruments', [0, 52])  # MIDI program numbers
     beats = data.get('beats', DEFAULT_BEATS)  # get beats from client, default 8
+    bpm = data.get('bpm', 120)  # get bpm from client, default 120
 
-    # Create MIDI file with both tracks
-    buf = create_midi_file(grids, NOTES, beats, instruments)
+    # Pass bpm to MIDI creation
+    buf = create_midi_file(grids, NOTES, beats, instruments, bpm)
 
     return send_file(
         buf,
