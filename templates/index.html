@@ -164,6 +164,7 @@
     let isLooping = false;
     let stopRequested = false;
     let scheduledIds = [];
+    let synths = [];
 
     async function playSequence(loop=false) {
       await Tone.start();
@@ -178,7 +179,7 @@
       };
       const inst1 = parseInt(document.getElementById('track1Instrument').value);
       const inst2 = parseInt(document.getElementById('track2Instrument').value);
-      const synths = [
+      synths = [
         (toneInstruments[inst1] || toneInstruments[0])(),
         (toneInstruments[inst2] || toneInstruments[52])()
       ];
@@ -188,11 +189,17 @@
           for (let t = 0; t < 2; ++t) {
             for (let r = 0; r < rows; ++r) {
               if (grids[t][r][c]) {
-                synths[t].triggerAttackRelease(
-                  Tone.Frequency(midiNotes[r], "midi"),
-                  "8n",
-                  startTime + c * beatDur
-                );
+                // Only schedule if not stopped
+                const scheduledTime = startTime + c * beatDur;
+                const id = setTimeout(() => {
+                  if (!stopRequested) {
+                    synths[t].triggerAttackRelease(
+                      Tone.Frequency(midiNotes[r], "midi"),
+                      "8n"
+                    );
+                  }
+                }, (scheduledTime - Tone.now()) * 1000);
+                scheduledIds.push(id);
               }
             }
           }
@@ -201,6 +208,9 @@
 
       async function loopPlay() {
         if (stopRequested) {
+          scheduledIds.forEach(id => clearTimeout(id));
+          scheduledIds = [];
+          synths.forEach(s => s.releaseAll && s.releaseAll());
           synths.forEach(s => s.dispose());
           return;
         }
@@ -227,6 +237,8 @@
       isLooping = false;
       stopRequested = true;
       if (loopTimeout) clearTimeout(loopTimeout);
+      // Immediately stop all sounds
+      if (synths.length) synths.forEach(s => s.releaseAll && s.releaseAll());
       playSequence(false);
     };
 
@@ -240,6 +252,9 @@
     document.getElementById('stopBtn').onclick = function() {
       stopRequested = true;
       if (loopTimeout) clearTimeout(loopTimeout);
+      scheduledIds.forEach(id => clearTimeout(id));
+      scheduledIds = [];
+      if (synths.length) synths.forEach(s => s.releaseAll && s.releaseAll());
     };
 
     // --- Save handler ---
