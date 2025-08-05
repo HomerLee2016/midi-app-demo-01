@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 # Notes C3 to C4 (MIDI numbers 48–60)
 NOTES = list(range(48, 61))
-BEATS = 32
+DEFAULT_BARS = 2
+DEFAULT_BEATS = DEFAULT_BARS * 4
 
 INSTRUMENT_OPTIONS = [
     {"name": "Piano", "midi": 0, "tone": "piano"},
@@ -18,11 +19,15 @@ INSTRUMENT_OPTIONS = [
 @app.route('/')
 def index():
     bpm = request.args.get('bpm', default=120, type=int)
+    beats = request.args.get('beats', default=None, type=int)
+    # Only use beats from query if present and valid, else use DEFAULT_BEATS
+    if not beats or beats < 1:
+        beats = DEFAULT_BEATS
     note_types = render_keyboard()
     return render_template(
         'index.html',
         note_types=note_types,
-        beats=BEATS,
+        beats=beats,
         beat_speed=bpm,
         bpm_label="♩",
         instrument_options=INSTRUMENT_OPTIONS,
@@ -35,9 +40,10 @@ def save_midi():
     data = request.json
     grids = data.get('grids')  # list of 2D lists
     instruments = data.get('instruments', [0, 52])  # MIDI program numbers
+    beats = data.get('beats', DEFAULT_BEATS)  # get beats from client, default 8
 
     # Create MIDI file with both tracks
-    buf = create_midi_file(grids, NOTES, BEATS, instruments)
+    buf = create_midi_file(grids, NOTES, beats, instruments)
 
     return send_file(
         buf,
