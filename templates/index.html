@@ -13,9 +13,14 @@
   <div id="grid">
     <table>
       <tbody>
+        {% set note_labels = ['C3', '', 'D3', '', 'E3', 'F3', '', 'G3', '', 'A3', '', 'B3', 'C4'] %}
         {% for i in range(note_types|length) %}
           <tr class="{{ note_types[i] }}-key">
-            <td class="note-label">{{ note_types[i] }}</td>
+            {% if note_types[i] == 'white' %}
+              <td class="note-label">{{ note_labels[i] }}</td>
+            {% else %}
+              <td class="note-label"></td>
+            {% endif %}
             {% for b in range(beats) %}
               <td>
                 <div class="cell" data-row="{{ i }}" data-col="{{ b }}"></div>

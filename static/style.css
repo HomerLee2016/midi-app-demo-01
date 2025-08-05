@@ -18,11 +18,23 @@ h1 {
 
 table {
   border-collapse: collapse;
+  border-spacing: 0;
 }
 
 td {
   padding: 0;
   margin: 0;
+  border-spacing: 0;
+  border: none;
+}
+
+tr {
+  border: none;
+}
+
+/* Add vertical grid line between beats */
+td:not(:first-child) {
+  border-left: 2px solid #bbb;
 }
 
 .note-label {
@@ -33,6 +45,8 @@ td {
   font-family: monospace;
   background: #eaeaea;
   border-right: 2px solid #bbb;
+  border-top: none;
+  border-bottom: none;
 }
 
 .white-key {
@@ -46,13 +60,17 @@ td {
 
 .cell {
   width: 28px;
-  height: 14px; /* reduced height for a more compact grid */
+  height: 14px;
   border: 1px solid #bbb;
+  border-left: none;
+  border-right: none;
   background: #f9f9f9;
   cursor: pointer;
   transition: background 0.1s;
-  display: inline-block;
+  display: block;
   box-sizing: border-box;
+  margin: 0;
+  /* Remove any default spacing */
 }
 
 .white-key .cell {
@@ -64,19 +82,16 @@ td {
 }
 
 .cell.active {
-  /* Default for white keys, overridden below for black keys */
-  background: #a5d6a7; /* light green */
+  background: #a5d6a7;
   border-color: #388e3c;
 }
 
-/* Active cell in black key row: dark green */
 .black-key .cell.active {
-  background: #388e3c; /* dark green */
+  background: #388e3c;
 }
 
-/* Active cell in white key row: light green */
 .white-key .cell.active {
-  background: #a5d6a7; /* light green */
+  background: #a5d6a7;
 }
 
 .controls {
