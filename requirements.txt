@@ -1,0 +1,3 @@
+Flask
+mido
+python-rtmidi  # MIDI backend

@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+#grid { display: inline-block; }
+.row { display: flex; }
+.label {
+  width: 50px;
+  line-height: 30px;
+}
+.cell {
+  width: 30px;
+  height: 30px;
+  margin: 2px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+.cell.active { background: #4caf50; }
+.controls {
+  margin-top: 20px;
+}
+.controls button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 16px;
+}

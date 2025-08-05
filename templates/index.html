@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid MIDI Sequencer</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <!-- Tone.js for in-browser playback -->
+  <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.js"></script>
+</head>
+<body>
+  <h1>Grid MIDI Sequencer</h1>
+  <div id="grid">
+    {% for note in notes %}
+    <div class="row">
+      <div class="label">{{ note }}</div>
+      {% for _ in range(beats) %}
+      <div class="cell"></div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  <div class="controls">
+    <button id="playBtn">Play</button>
+    <button id="saveBtn">Save as MIDI</button>
+  </div>
+  <script src="/static/script.js"></script>
+</body>
+</html>
