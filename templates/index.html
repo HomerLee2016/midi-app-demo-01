@@ -163,6 +163,7 @@
     let loopTimeout = null;
     let isLooping = false;
     let stopRequested = false;
+    let scheduledIds = [];
 
     async function playSequence(loop=false) {
       await Tone.start();
@@ -297,13 +298,24 @@
           if (data.grids && data.grids.length === 2) {
             grids = data.grids;
             cols = data.beats || grids[0][0].length;
-            // Re-render the grids in-place
-            document.getElementById('addBarBtn').click();
-            // Update grid UI
-            document.querySelectorAll('.cell').forEach(cell => {
-              const t = +cell.dataset.track, r = +cell.dataset.row, c = +cell.dataset.col;
-              cell.classList.toggle('active', !!grids[t][r][c]);
+            // Re-render the grids in-place, preserving note types and active cells
+            ['grid1', 'grid2'].forEach((gridId, t) => {
+              const gridDiv = document.getElementById(gridId);
+              let html = '<table><tbody>';
+              const noteLabels = ['C3', '', 'D3', '', 'E3', 'F3', '', 'G3', '', 'A3', '', 'B3', 'C4'];
+              for (let i = 0; i < rows; ++i) {
+                html += `<tr class="${window.note_types[i]}-key">`;
+                html += `<td class="note-label">${window.note_types[i] === 'white' ? noteLabels[i] : ''}</td>`;
+                for (let b = 0; b < cols; ++b) {
+                  html += `<td><div class="cell${grids[t][i][b] ? ' active' : ''}" data-track="${t}" data-row="${i}" data-col="${b}"></div></td>`;
+                }
+                html += `</tr>`;
+              }
+              html += '</tbody></table>';
+              gridDiv.innerHTML = html;
             });
+            attachCellHandlers();
+            updateBarLines();
           }
           if (data.instruments && data.instruments.length === 2) {
             document.getElementById('track1Instrument').value = data.instruments[0];
