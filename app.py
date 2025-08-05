@@ -11,9 +11,8 @@ BEATS = 4
 
 @app.route('/')
 def index():
-    note_names = ['C3','C#3','D3','D#3','E3','F3','F#3','G3','G#3','A3','A#3','B3','C4']
     note_types = render_keyboard()
-    return render_template('index.html', notes=note_names, note_types=note_types, beats=BEATS)
+    return render_template('index.html', note_types=note_types, beats=BEATS)
 
 @app.route('/save', methods=['POST'])
 def save_midi():
